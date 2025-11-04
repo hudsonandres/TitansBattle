@@ -64,6 +64,7 @@ public final class TitansBattle extends JavaPlugin {
     private ListenerManager listenerManager;
     private ConfigurationDao configurationDao;
     private PlaceholderHook placeholderHook;
+    private RedisManager redisManager;
 
     @Override
     public void onEnable() {
@@ -78,10 +79,12 @@ public final class TitansBattle extends JavaPlugin {
         challengeManager = new ChallengeManager(this);
         listenerManager = new ListenerManager(this);
         configurationDao = new ConfigurationDao(getDataFolder());
+        redisManager = new RedisManager(this);
 
         configManager.load();
         languageManager.setup();
         databaseManager.setup();
+        redisManager.initialize();
 
         loadGroupsPlugin();
 
@@ -121,6 +124,7 @@ public final class TitansBattle extends JavaPlugin {
         challengeManager.getChallenges().forEach(c -> c.cancel(Bukkit.getConsoleSender()));
         gameManager.getCurrentGame().ifPresent(g -> g.cancel(Bukkit.getConsoleSender()));
         databaseManager.close();
+        redisManager.shutdown();
     }
 
     public static TitansBattle getInstance() {
@@ -171,6 +175,10 @@ public final class TitansBattle extends JavaPlugin {
 
     public PlaceholderHook getPlaceholderHook() {
         return placeholderHook;
+    }
+
+    public RedisManager getRedisManager() {
+        return redisManager;
     }
 
     /**

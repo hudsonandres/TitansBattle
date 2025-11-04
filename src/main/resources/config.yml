@@ -84,6 +84,31 @@ blocked_commands_everyone:
 #Send a webhook in game start, leave empty to disable
 discord_webhook_url: ""
 
+#Redis configuration for cross-server messaging
+redis:
+  enabled: false
+  host: "localhost"
+  port: 6379
+  username: ""
+  password: ""
+  database: 0
+  timeout: 2000
+  
+  #Server configuration
+  network:
+    master: false
+    server_name: "server1"
+    target_servers:
+      lobby:
+        enabled: true
+        worlds: []  #empty = all worlds
+      survival:
+        enabled: true
+        worlds: ["world", "world_nether"]
+      skyblock:
+        enabled: false
+        worlds: ["skyblock_world"]
+
 #Destinations
 destinations:
     general_exit:
