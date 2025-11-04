@@ -454,8 +454,11 @@ public abstract class BaseGame {
             processRemainingPlayers(warrior);
             //last participant
             if (getConfig().isGroupMode() && group != null && !getGroupParticipants().containsKey(group)) {
-                broadcastKey("group_defeated", group.getName());
-                Bukkit.getPluginManager().callEvent(new GroupDefeatedEvent(group, warrior.toOnlinePlayer()));
+                // Only broadcast if more than one group remains after this group is eliminated
+                if (getGroupParticipants().size() > 1) {
+                    broadcastKey("group_defeated", group.getName());
+                    Bukkit.getPluginManager().callEvent(new GroupDefeatedEvent(group, warrior.toOnlinePlayer()));
+                }
                 group.getData().increaseDefeats(getConfig().getName());
             }
             sendRemainingOpponentsCount();
@@ -685,7 +688,11 @@ public abstract class BaseGame {
 
         @Override
         public void run() {
-            broadcastKey("preparation_over");
+            int clancount = getGroupParticipants().size();
+            int minclans = getConfig().getMinimumGroups();
+            int playerscount = getParticipants().size();
+            int minplayers = getConfig().getMinimumPlayers();
+            broadcastKey("preparation_over", clancount, minclans, playerscount, minplayers);
             runCommandsBeforeBattle(getCurrentFighters());
             battle = true;
             
